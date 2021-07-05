@@ -1,0 +1,120 @@
+ALTER TABLE dbo.vehicles DROP COLUMN id_v, url, region_url, VIN, size, 
+paint_color, image_url, description, lat, long, posting_date
+
+SELECT COUNT(*) FROM dbo.vehicles = 458213
+
+DELETE dbo.vehicles
+WHERE manufacturer IS NULL  18220
+
+DELETE dbo.vehicles
+WHERE model IS NULL 4812
+
+DELETE dbo.vehicles
+WHERE region IS NULL 0 
+
+DELETE dbo.vehicles
+WHERE fuel IS NULL 2879
+
+DELETE dbo.vehicles
+WHERE odometer IS NULL  48128
+
+DELETE dbo.vehicles
+WHERE state IS NULL 0
+
+DELETE dbo.vehicles
+WHERE title_status IS NULL 1067
+
+DELETE dbo.vehicles
+WHERE transmission IS NULL 1483
+
+
+
+DELETE dbo.vehicles
+WHERE condition IS NULL 149027
+
+DELETE dbo.vehicles
+WHERE type IS NULL 28100
+
+
+DELETE dbo.vehicles
+WHERE drive IS NULL 31601
+
+
+ALTER TABLE dbo.vehicles
+ALTER COLUMN price float NULL;
+
+ALTER TABLE dbo.vehicles
+ALTER COLUMN year float NULL;
+
+ALTER TABLE dbo.vehicles
+ALTER COLUMN odometer float NULL;
+
+UPDATE dbo.vehicles
+    SET cylinders=SUBSTRING(cylinders, 1, 2)
+
+ALTER TABLE dbo.vehicles
+ALTER COLUMN cylinders float NULL;
+
+DELETE dbo.vehicles
+WHERE price = 0
+
+DELETE dbo.vehicles
+WHERE cylinders IS NULL 
+
+UPDATE dbo.vehicles
+    SET year=2010
+	WHERE year = 0
+
+
+SELECT SUBSTRING(type,1,3) as type_id, type as name, AVG(price) as value 
+INTO dbo.type
+FROM dbo.vehicles
+GROUP BY (type)
+
+
+SELECT region as region_id, region as name, AVG(price) as value, 
+SUBSTRING(state,1,3) as state_id
+INTO dbo.region
+FROM dbo.vehicles
+GROUP BY region, state
+
+
+
+SELECT dbo.vehicles.id, dbo.vehicles.year, dbo.vehicles.cylinders, 
+dbo.vehicles.odometer, dbo.vehicles.price, 
+dbo.condition.value AS condition,
+dbo.drive.value AS drive,
+dbo.fuel.value AS fuel,
+dbo.manufacturer.value AS manufacturer,
+dbo.model.value AS model,
+dbo.region.value AS region,
+dbo.state.value AS state,
+dbo.title_status.value AS title_status,
+dbo.transmission.value AS transmission,
+dbo.type.value AS type
+FROM dbo.vehicles INNER JOIN dbo.model ON dbo.vehicles.model_id=dbo.model.id
+INNER JOIN dbo.manufacturer ON dbo.model.manufacturer_id= dbo.manufacturer.id
+INNER JOIN dbo.region ON dbo.vehicles.region_id = dbo.region.id
+INNER JOIN dbo.state ON dbo.state.id = dbo.region.state_id
+INNER JOIN dbo.condition ON dbo.condition.id = dbo.vehicles.condition_id
+INNER JOIN dbo.drive ON dbo.drive.id = dbo.vehicles.drive_id
+INNER JOIN dbo.fuel ON dbo.fuel.id = dbo.vehicles.fuel_id
+INNER JOIN dbo.title_status ON dbo.title_status.id = dbo.vehicles.title_status_id
+INNER JOIN dbo.transmission ON dbo.transmission.id = dbo.vehicles.transmission_id
+INNER JOIN dbo.type ON dbo.type.id = dbo.vehicles.type_id
+
+
+DELETE dbo.vehicles
+WHERE price > 1000000
+
+DELETE dbo.vehicles
+WHERE price < 1000
+
+DELETE dbo.vehicles
+WHERE (price > 125000 AND year < 2000)
+
+DELETE dbo.vehicles
+WHERE (price > 150000 AND year > 2000)
+
+DELETE dbo.vehicles
+WHERE (odometer > 1000000)
